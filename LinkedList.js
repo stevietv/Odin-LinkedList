@@ -5,8 +5,8 @@ class LinkedList {
     this.head = null;
   }
 
-  append(value) {
-    let newNode = new Node(value);
+  append(key, value) {
+    let newNode = new Node(key,  value);
     if (this.head === null) {
       this.head = newNode;
     }
@@ -20,27 +20,37 @@ class LinkedList {
     }
   }
 
-  prepend(value) {
-    let newNode = new Node(value);
+  prepend(key, value) {
+    let newNode = new Node(key,  value);
     newNode.nextNode = this.head;
     this.head = newNode;
   }
 
   pop() {
+    if (this.head === null) {
+      return null
+    }
+
+    if (this.head.nextNode === null) {
+      const nodeToReturn = this.head;
+      this.head = null; // Only one node
+      return nodeToReturn;
+    }
+
     let currentNode = this.head;
-    let prevNode;
-    while (currentNode.nextNode !== null) {
-      prevNode = currentNode;
+    while (currentNode.nextNode.nextNode !== null) {
       currentNode = currentNode.nextNode;
     }
-    prevNode.nextNode = null;
-    return currentNode;
+
+    const nodeToReturn = currentNode.nextNode;
+    currentNode.nextNode = null;
+    return nodeToReturn;
   }
 
   size() {
-    let size = 1;
+    let size = 0;
     let currentNode = this.head;
-    while (currentNode.nextNode !== null) {
+    while (currentNode !== null) {
       currentNode = currentNode.nextNode;
       size++;
     }
@@ -67,10 +77,10 @@ class LinkedList {
     return currentNode;
   }
 
-  contains(value) {
+  contains(key) {
     let currentNode = this.head;
     while (currentNode !== null) {
-      if (currentNode.value.localeCompare(value, undefined, {sensitivity: 'accent'}) === 0) {
+      if (currentNode.key.localeCompare(key, undefined, {sensitivity: 'accent'}) === 0) {
         return true;
       }
       currentNode = currentNode.nextNode;
@@ -78,11 +88,11 @@ class LinkedList {
     return false;
   }
 
-  find(value) {
+  find(key) {
     let currentNode = this.head;
     let index= 0;
     while (currentNode !== null) {
-      if (currentNode.value.localeCompare(value, undefined, {sensitivity: 'accent'}) === 0) {
+      if (currentNode.key.localeCompare(key, undefined, {sensitivity: 'accent'}) === 0) {
         return index;
       }
       currentNode = currentNode.nextNode;
@@ -100,7 +110,7 @@ class LinkedList {
     let currentNode = this.head;
 
     while (currentNode !== null) {
-      outputString += `( ${currentNode.value} ) -> `
+      outputString += `( ${currentNode.key} ) -> `
       currentNode = currentNode.nextNode;
     }
 
@@ -108,7 +118,7 @@ class LinkedList {
     return outputString;
   }
 
-  insertAt(index, value) {
+  insertAt(index, key, value) {
     if (this.size() < index){
       this.append(value);
     }
@@ -117,7 +127,7 @@ class LinkedList {
     }
 
     else {
-      let newNode = new Node(value);
+      let newNode = new Node(key, value);
       let currentNodeAtPreviousIndex = this.at(index-1);
       let currentNodeAtIndex = this.at(index);
 
@@ -127,10 +137,22 @@ class LinkedList {
   }
 
   removeAt(index) {
-    if (index <= this.size()) {
+    if (index > this.size()) {
+      return
+    }
+
+    if (index === 0) {
+      this.head = this.head.nextNode;
+    }
+    else {
       let currentNodeAtPreviousIndex = this.at(index - 1);
       currentNodeAtPreviousIndex.nextNode = this.at(index + 1);
     }
+  }
+
+  updateAt(index, value) {
+    let node = this.at(index);
+    node.value = value;
   }
 }
 

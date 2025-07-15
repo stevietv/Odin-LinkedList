@@ -1,7 +1,5 @@
 import LinkedList from './LinkedList.js';
 
-console.log('Happy developing ✨')
-
 const list = new LinkedList();
 
 console.log(list.toString());
